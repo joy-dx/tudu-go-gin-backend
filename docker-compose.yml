@@ -1,0 +1,9 @@
+services:
+  postgresql:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: development
+      POSTGRES_PASSWORD: development
+      POSTGRES_DB: development
+    ports:
+      - '5432:5432'
