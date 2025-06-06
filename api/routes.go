@@ -81,6 +81,7 @@ func NewRouter(authMiddleware *jwt.GinJWTMiddleware, corsMiddleware gin.HandlerF
 	}
 
 	router := gin.Default()
+	router.Use(corsMiddleware)
 	secureRouter := router.Group("/", authMiddleware.MiddlewareFunc())
 	for _, route := range routes {
 
@@ -113,7 +114,6 @@ func NewRouter(authMiddleware *jwt.GinJWTMiddleware, corsMiddleware gin.HandlerF
 		}
 
 	}
-	router.Use(corsMiddleware)
 
 	return router
 }
