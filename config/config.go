@@ -2,10 +2,11 @@ package config
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"log"
 	"os"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 type AppConfigSpec struct {
@@ -44,7 +45,7 @@ func ConfigInit(cfgFile string) {
 	}
 
 	viper.AutomaticEnv()
-	viper.SetEnvPrefix("todo")
+	viper.SetEnvPrefix("tudu")
 
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
