@@ -1,10 +1,11 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/spf13/viper"
 	"github.com/symball/go-gin-boilerplate/cmd/db"
 	"github.com/symball/go-gin-boilerplate/config"
-	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -35,10 +36,11 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cobra.yaml)")
 	rootCmd.PersistentFlags().StringP(
-		"postgres_dsn",
+		"db_dsn",
 		"d",
-		"postgres://development:development@localhost:5432/development?sslmode=disable",
-		"Postgres connection string",
+		"file::memory:?cache=shared",
+		//"postgres://development:development@localhost:5432/development?sslmode=disable",
+		"Using BunORM, connect with either SQLite or Postgres",
 	)
 	viper.BindPFlag("postgres_dsn", rootCmd.PersistentFlags().Lookup("postgres_dsn"))
 
