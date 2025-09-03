@@ -22,7 +22,7 @@ type AppConfigSpec struct {
 	AuthHeaderKey        string        `mapstructure:"auth_header_key"`
 	AuthSessionLength    time.Duration `mapstructure:"auth_session_length"`
 	CorsAllowedOrigins   []string      `mapstructure:"cors_allowed_origins"`
-	PostgresDSN          string        `mapstructure:"postgres_dsn"`
+	DBDSN                string        `mapstructure:"db_dsn"`
 	Port                 string        `mapstructure:"port"`
 }
 

@@ -18,7 +18,7 @@ var dbHandle *bun.DB
 
 // Initiate an SQLite DB instance
 func DBInit() {
-	dsn := config.AppConfig.PostgresDSN
+	dsn := config.AppConfig.DBDSN
 	switch true {
 	// SQLite
 	case strings.HasPrefix(dsn, "file"):
@@ -31,6 +31,8 @@ func DBInit() {
 
 		sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 		dbHandle = bun.NewDB(sqldb, pgdialect.New())
+	default:
+		log.Fatalf("database not supported: %s", dsn)
 	}
 
 	dbHandle.AddQueryHook(bundebug.NewQueryHook())
