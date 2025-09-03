@@ -42,7 +42,7 @@ func init() {
 		//"postgres://development:development@localhost:5432/development?sslmode=disable",
 		"Using BunORM, connect with either SQLite or Postgres",
 	)
-	viper.BindPFlag("postgres_dsn", rootCmd.PersistentFlags().Lookup("postgres_dsn"))
+	viper.BindPFlag("db_dsn", rootCmd.PersistentFlags().Lookup("db_dsn"))
 
 	rootCmd.PersistentFlags().Uint32(
 		"auth_argon_salt_length",
