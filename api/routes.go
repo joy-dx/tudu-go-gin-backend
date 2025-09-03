@@ -1,11 +1,12 @@
 package api
 
 import (
+	"net/http"
+
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/symball/go-gin-boilerplate/index"
 	"github.com/symball/go-gin-boilerplate/todos"
-	"net/http"
 )
 
 var router *gin.Engine
@@ -81,6 +82,8 @@ func NewRouter(authMiddleware *jwt.GinJWTMiddleware, corsMiddleware gin.HandlerF
 	}
 
 	router := gin.Default()
+	router.Use(corsMiddleware)
+
 	secureRouter := router.Group("/", authMiddleware.MiddlewareFunc())
 	for _, route := range routes {
 
@@ -113,7 +116,6 @@ func NewRouter(authMiddleware *jwt.GinJWTMiddleware, corsMiddleware gin.HandlerF
 		}
 
 	}
-	router.Use(corsMiddleware)
 
 	return router
 }
