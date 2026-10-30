@@ -1,13 +1,13 @@
 package cmd
 
 import (
+	"log"
+	"time"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/symball/go-gin-boilerplate/api"
 	"github.com/symball/go-gin-boilerplate/config"
-	"github.com/symball/go-gin-boilerplate/storage"
-	"log"
-	"time"
 )
 
 // serveCmd represents the serve command
@@ -17,7 +17,6 @@ var serveCmd = &cobra.Command{
 	Short: "Serve the API",
 	Long:  `A Gin based API server`,
 	Run: func(cmd *cobra.Command, args []string) {
-		storage.DBInit()
 
 		// Prepare auth middleware
 		authMiddleware := api.MiddlewareAuthInit()

@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/symball/go-gin-boilerplate/cmd/db"
 	"github.com/symball/go-gin-boilerplate/config"
+	"github.com/symball/go-gin-boilerplate/storage"
 
 	"github.com/spf13/cobra"
 )
@@ -16,6 +17,8 @@ var (
 	rootCmd = &cobra.Command{
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			config.ConfigInit(cfgFile)
+			storage.DBInit()
+
 		},
 		Use: "github.com/symball/go-gin-boilerplate",
 		Short: `Backend application for managing building reports.
