@@ -5,9 +5,11 @@ package db
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/spf13/cobra"
+	"github.com/symball/go-gin-boilerplate/migrations"
+	"github.com/symball/go-gin-boilerplate/storage"
+	"github.com/uptrace/bun/migrate"
 )
 
 // statusCmd represents the status command
@@ -20,14 +22,29 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
+		bunMigrations, getMigrationsErr := migrations.GetForDatabase()
+		if getMigrationsErr != nil {
+			return fmt.Errorf("could not get migrations: %w", getMigrationsErr)
+		}
+
+		migrator := migrate.NewMigrator(
+			storage.DBGet(),
+			bunMigrations,
+		)
+
+		if err := migrator.Init(cmd.Context()); err != nil {
+			return fmt.Errorf("initialize migrator: %w", err)
+		}
+
 		ms, err := migrator.MigrationsWithStatus(cmd.Context())
 		if err != nil {
-			log.Panic(err)
+			return fmt.Errorf("could not get migration status: %w", err)
 		}
 		fmt.Printf("migrations: %s\n", ms)
 		fmt.Printf("unapplied migrations: %s\n", ms.Unapplied())
 		fmt.Printf("last migration group: %s\n", ms.LastGroup())
+		return nil
 	},
 }
 

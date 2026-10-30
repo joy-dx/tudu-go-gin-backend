@@ -8,6 +8,9 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
+	"github.com/symball/go-gin-boilerplate/migrations"
+	"github.com/symball/go-gin-boilerplate/storage"
+	"github.com/uptrace/bun/migrate"
 )
 
 // migrateCmd represents the migrate command
@@ -20,7 +23,21 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
+		bunMigrations, getMigrationsErr := migrations.GetForDatabase()
+		if getMigrationsErr != nil {
+			return fmt.Errorf("could not get migrations: %w", getMigrationsErr)
+		}
+
+		migrator := migrate.NewMigrator(
+			storage.DBGet(),
+			bunMigrations,
+		)
+
+		if err := migrator.Init(cmd.Context()); err != nil {
+			return fmt.Errorf("initialize migrator: %w", err)
+		}
+
 		if err := migrator.Lock(cmd.Context()); err != nil {
 			log.Panic(err)
 		}
@@ -32,9 +49,10 @@ to quickly create a Cobra application.`,
 		}
 		if group.IsZero() {
 			fmt.Printf("there are no new migrations to run (database is up to date)\n")
-			return
+			return nil
 		}
 		fmt.Printf("migrated to %s\n", group)
+		return nil
 	},
 }
 
