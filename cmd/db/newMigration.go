@@ -5,11 +5,12 @@ package db
 
 import (
 	"fmt"
+	"log"
+	"strings"
+
 	"github.com/symball/go-gin-boilerplate/migrations"
 	"github.com/symball/go-gin-boilerplate/storage"
 	"github.com/uptrace/bun/migrate"
-	"log"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -25,9 +26,22 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 
-		migrator := migrate.NewMigrator(storage.DBGet(), migrations.Migrations)
+		bunMigrations, getMigrationsErr := migrations.GetForDatabase()
+		if getMigrationsErr != nil {
+			return fmt.Errorf("could not get migrations: %w", getMigrationsErr)
+		}
+
+		migrator := migrate.NewMigrator(
+			storage.DBGet(),
+			bunMigrations,
+		)
+
+		if err := migrator.Init(cmd.Context()); err != nil {
+			return fmt.Errorf("initialize migrator: %w", err)
+		}
+
 		name := strings.Join(args, "_")
 		files, err := migrator.CreateSQLMigrations(cmd.Context(), name)
 		if err != nil {
@@ -37,6 +51,7 @@ to quickly create a Cobra application.`,
 		for _, mf := range files {
 			fmt.Printf("created migration %s (%s)\n", mf.Name, mf.Path)
 		}
+		return nil
 	},
 }
 

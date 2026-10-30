@@ -12,8 +12,9 @@ package todos
 
 import (
 	"fmt"
-	"github.com/symball/go-gin-boilerplate/lib"
 	"net/http"
+
+	"github.com/symball/go-gin-boilerplate/lib"
 
 	"github.com/gin-gonic/gin"
 )

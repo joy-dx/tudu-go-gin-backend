@@ -17,7 +17,7 @@ var (
 	rootCmd = &cobra.Command{
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			config.ConfigInit(cfgFile)
-			storage.DBInit()
+			storage.DBInit(cmd.Context())
 
 		},
 		Use: "github.com/symball/go-gin-boilerplate",
@@ -38,6 +38,15 @@ func Execute() {
 func init() {
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cobra.yaml)")
+
+	rootCmd.PersistentFlags().BoolP(
+		"verbose",
+		"v",
+		false,
+		"Whether to output extra information during operation",
+	)
+	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
+
 	rootCmd.PersistentFlags().StringP(
 		"db_dsn",
 		"d",
@@ -46,6 +55,13 @@ func init() {
 		"Using BunORM, connect with either SQLite or Postgres",
 	)
 	viper.BindPFlag("db_dsn", rootCmd.PersistentFlags().Lookup("db_dsn"))
+
+	rootCmd.PersistentFlags().String(
+		"db_driver",
+		"sqlite",
+		"Which BunORM database driver to use. Options are: sqlite, postgres, mysql, and mssql",
+	)
+	viper.BindPFlag("db_driver", rootCmd.PersistentFlags().Lookup("db_driver"))
 
 	rootCmd.PersistentFlags().Uint32(
 		"auth_argon_salt_length",

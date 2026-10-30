@@ -22,8 +22,10 @@ type AppConfigSpec struct {
 	AuthHeaderKey        string        `mapstructure:"auth_header_key"`
 	AuthSessionLength    time.Duration `mapstructure:"auth_session_length"`
 	CorsAllowedOrigins   []string      `mapstructure:"cors_allowed_origins"`
+	DBDriver             string        `mapstructure:"db_driver"`
 	DBDSN                string        `mapstructure:"db_dsn"`
 	Port                 string        `mapstructure:"port"`
+	Verbose              bool          `mapstructure:"verbose"`
 }
 
 var AppConfig AppConfigSpec
